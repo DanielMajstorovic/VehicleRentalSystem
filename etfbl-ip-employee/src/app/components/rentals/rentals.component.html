@@ -1,0 +1,134 @@
+<div class="container-fluid">
+    <h3 class="fw-bold">Rentals Management</h3>
+  
+    <div class="d-flex flex-wrap gap-2 align-items-center mt-3 mb-3">
+      <div class="input-group" style="max-width: 260px;">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search…"
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="onSearch()"
+        />
+        <button class="btn btn-primary" (click)="onSearch()">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </div>
+  
+    <div class="table-responsive bg-white rounded shadow-sm">
+      <table class="table table-striped mb-0">
+        <thead class="thead-dark">
+          <tr>
+            <th>Client</th>
+            <th>Client name</th>
+            <th>Vehicle UID</th>
+            <th>From</th>
+            <th>To</th>
+            <th style="width: 90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of data">
+            <td>{{ r.clientUserUsername }}</td>
+            <td>{{ r.clientUserFirstName }} {{ r.clientUserLastName }}</td>
+            <td>{{ r.vehicleUid }}</td>
+            <td>{{ r.startTime | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <span *ngIf="r.endTime; else activeTpl">
+                {{ r.endTime | date:'dd/MM/yyyy HH:mm' }}
+              </span>
+              <ng-template #activeTpl>
+                <span class="text-success">Active</span>
+              </ng-template>
+            </td>
+            <td>
+              <button
+                class="btn btn-sm btn-outline-secondary"
+                (click)="openDetails(r.id)"
+                title="View details"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="data.length===0">
+            <td colspan="6" class="text-center text-muted">No rentals found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="d-flex justify-content-between align-items-center mt-2">
+      <small>Page {{ page+1 }} / {{ totalPages }} – {{ totalElements }} items</small>
+      <div>
+        <button
+          class="btn btn-outline-secondary btn-sm me-1"
+          [disabled]="page===0"
+          (click)="go(page-1)"
+        ><i class="bi bi-chevron-left"></i> Prev</button>
+        <button
+          class="btn btn-outline-secondary btn-sm"
+          [disabled]="page>=totalPages-1"
+          (click)="go(page+1)"
+        >Next <i class="bi bi-chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+  
+  <div
+    class="modal fade"
+    tabindex="-1"
+    [ngClass]="{'show d-block': showDetails}"
+    *ngIf="showDetails"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Rental details</h5>
+          <button type="button" class="btn-close" (click)="closeDetails()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-6">
+              <table class="table table-sm">
+                <tbody>
+                  <tr><th>Client</th><td>{{ selected.clientUserUsername }}</td></tr>
+                  <tr><th>Client first name</th><td>{{ selected.clientUserFirstName }}</td></tr>
+                  <tr><th>Client last name</th><td>{{ selected.clientUserLastName }}</td></tr>
+                    <tr><th>Client email</th><td>{{ selected.clientEmail }}</td></tr>
+                    <tr><th>Client phone</th><td>{{ selected.clientPhone }}</td></tr>
+                    <tr><th>Total amount</th><td>{{ (selected.totalAmount | currency:'USD') || 'Active rental'  }}</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-6">
+              <table class="table table-sm">
+                <tbody>
+                  
+                  <tr><th>Vehicle UID</th><td>{{selected.vehicleUid}}</td></tr>
+                    <tr><th>Vehicle</th><td>{{ selected.vehicleManufacturerName }} ({{ selected.vehicleModel }})</td></tr>
+                  <tr><th>Start time</th><td>{{ selected.startTime | date:'dd/MM/yyyy HH:mm' }}</td></tr>
+                  <tr>
+                    <th>End time</th>
+                    <td>
+                      {{ selected.endTime ? (selected.endTime | date:'dd/MM/yyyy HH:mm') : 'Active rental' }}
+                    </td>
+                  </tr>
+                  <tr><th>Driver’s license</th><td>{{ selected.driversLicense }}</td></tr>
+                  <tr><th>Payment card</th><td>{{ selected.paymentCard ? '•••• •••• •••• ' + selected.paymentCard.slice(-4) : 'N/A' }}</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+  
+          <div id="rentalMap" style="height: 300px;"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" (click)="closeDetails()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showDetails" (click)="closeDetails()"></div>
+  

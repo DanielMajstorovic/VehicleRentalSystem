@@ -1,0 +1,77 @@
+.custom-navbar {
+  background: linear-gradient(to right, #212529, #212529, #7d828a);
+}
+.navbar-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.page-content {
+  flex: 1;
+}
+
+.home-grid .btn {
+  transition: transform .2s;
+}
+.home-grid .btn:hover {
+  transform: translateY(-3px);
+}
+.home-grid .btn i {
+  font-size: 1.4rem;
+}
+
+
+
+
+.page-content {
+  margin-top: 1rem;
+}
+
+.home-grid-container {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.home-grid .col-10 {
+  display: flex;
+  justify-content: center;
+}
+
+.home-grid .btn {
+  min-width: 160px;
+}
+
+@media (max-width: 576px) {
+  .home-grid {
+	padding: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+}
+
+.vehicle-img {
+  max-height: 150px;
+  width: auto;
+}
+
+
+.client-body{
+  background:#f8f9fa;
+}
+
+
+
+

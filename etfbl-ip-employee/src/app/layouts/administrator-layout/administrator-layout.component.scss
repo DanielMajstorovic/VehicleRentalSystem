@@ -1,0 +1,101 @@
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    // transition: all 0.3s ease;
+    overflow-y: auto;
+    height: calc(100vh - 56px);
+    position: sticky;
+    top: 56px;
+    
+    &.collapsed {
+      width: 80px;
+    }
+    
+    .nav-link {
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      
+      &.active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      
+      i {
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+      }
+    }
+  }
+  
+  /* Content area */
+  .content-area {
+    flex: 1;
+    overflow-y: auto;
+    min-height: calc(100vh - 56px);
+  }
+  
+  /* Active link styling */
+  .active {
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Add these styles for the dropdown */
+  .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-menu {
+    display: none;
+    
+    &.show {
+      display: block;
+    }
+  }
+
+  /* Navbar logo styling */
+.navbar-logo {
+    height: 30px; /* Adjust height as needed */
+    width: auto;
+    object-fit: contain;
+  }
+  
+  /* For high-DPI displays */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .navbar-logo {
+      height: 32px; /* Slightly larger for retina displays */
+    }
+  }
+  
+  /* Ensure the dropdown is positioned correctly */
+  .dropdown-menu-end {
+    right: 0;
+    left: auto;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 767.98px) {
+    .sidebar {
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      
+      &.collapsed {
+        left: -250px;
+        width: 250px;
+      }
+    }
+    
+    .content-area {
+      margin-left: 0 !important;
+    }
+  }
+  
+
+  .custom-navbar {
+    background: linear-gradient(to right, #212529, #212529, #7d828a);
+  }

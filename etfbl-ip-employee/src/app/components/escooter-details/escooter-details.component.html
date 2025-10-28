@@ -1,0 +1,297 @@
+<div class="container mt-3" *ngIf="scooter as s">
+  <span style="display: flex">
+    <button class="btn btn-outline-secondary mb-3" (click)="onBack()">
+      &larr; Back to E‑Scooters
+    </button>
+    <p
+      style="
+        margin-left: 50px;
+        display: flex;
+        align-items: center;
+        font-size: 32px;
+        font: bold;
+      "
+    >
+      E-Scooter Details
+    </p>
+  </span>
+
+  <div class="card mb-4 shadow-sm">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img
+          [src]="imageUrl"
+          class="img-fluid rounded-start"
+          alt="E‑scooter"
+          (error)="onImageError($event)"
+        />
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">UID: {{ s.vehicleUid }}</h5>
+
+          <p class="card-text mb-1">
+            Manufacturer:
+            <strong>{{ s.vehicleManufacturerName }}</strong>
+            <span *ngIf="s.vehicleManufacturerCountry">
+              ({{ s.vehicleManufacturerCountry }})
+            </span>
+          </p>
+
+          <p class="card-text mb-1">
+            Model: <strong>{{ s.vehicleModel }}</strong>
+          </p>
+
+          <p class="card-text mb-1">
+            Purchase Price:
+            <strong>{{ s.vehiclePurchasePrice | currency : "USD" }}</strong>
+          </p>
+
+          <p class="card-text mb-1">
+            Price/Minute:
+            <strong>{{
+              s.vehiclePricePerSecond * 60 | currency : "USD"
+            }}</strong>
+          </p>
+
+          <p class="card-text mb-1">
+            Max Speed:
+            <strong>{{ s.maxSpeed }} km/h</strong>
+          </p>
+
+          <p class="card-text">
+            Status:
+            <strong>{{ s.vehicleStatus }}</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-2">
+      <div
+        #map
+        style="height: 300px; border: 1px solid #ccc; margin: 0 1rem 1rem"
+      ></div>
+    </div>
+  </div>
+
+  <h5 class="fw-bold">Rentals for {{ s.vehicleUid }}</h5>
+
+  <div class="input-group mb-2" style="max-width: 300px">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Search rentals..."
+      [(ngModel)]="rentalsSearch"
+      (keyup.enter)="onSearchRentals()"
+    />
+    <button class="btn btn-primary" (click)="onSearchRentals()">
+      <i class="bi bi-search"></i>
+    </button>
+  </div>
+
+  <div class="table-responsive bg-white rounded shadow-sm">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Driver's License</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Payment Card</th>
+          <th>Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of rentals">
+          <td>{{ r.clientUserFirstName }} {{ r.clientUserLastName }}</td>
+          <td>{{ r.driversLicense }}</td>
+          <td>{{ r.startTime | date : "dd/MM/yyyy HH:mm" }}</td>
+          <td>{{ (r.endTime | date : "dd/MM/yyyy HH:mm") || "Active" }}</td>
+          <td>
+            {{
+              r.paymentCard
+                ? "•••• •••• •••• " + r.paymentCard.slice(-4)
+                : "N/A"
+            }}
+          </td>
+          <td>{{ (r.totalAmount | currency : "USD") || "Active" }}</td>
+        </tr>
+
+        <tr *ngIf="rentals.length === 0">
+          <td colspan="6" class="text-center text-muted">No rentals found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-2">
+    <small>
+      Page {{ rentalsCur + 1 }} / {{ rentalsPages }} – Total {{ rentalsTotal }}
+    </small>
+    <div>
+      <button
+        class="btn btn-outline-secondary btn-sm me-1"
+        [disabled]="rentalsCur === 0"
+        (click)="goToRentalsPage(rentalsCur - 1)"
+      >
+        <i class="bi bi-chevron-left"></i> Prev
+      </button>
+      <button
+        class="btn btn-outline-secondary btn-sm"
+        [disabled]="rentalsCur >= rentalsPages - 1"
+        (click)="goToRentalsPage(rentalsCur + 1)"
+      >
+        Next <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <h5 class="fw-bold mt-4">Breakdowns for {{ s.vehicleUid }}</h5>
+
+  <div class="row mb-2 align-items-center">
+    <div class="col-auto" style="max-width: 300px">
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search breakdowns..."
+          [(ngModel)]="brSearch"
+          (keyup.enter)="onSearchBreakdowns()"
+        />
+        <button class="btn btn-primary" (click)="onSearchBreakdowns()">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="col text-end"
+      [attr.title]="
+        s.vehicleStatus === 'RENTED'
+          ? 'Cannot add breakdown while vehicle is rented'
+          : null
+      "
+    >
+      <button
+        class="btn btn-success"
+        (click)="openAddBreakModal()"
+        [disabled]="s.vehicleStatus === 'RENTED'"
+      >
+        <i class="bi bi-plus-circle"></i> Add Breakdown
+      </button>
+    </div>
+  </div>
+
+  <div class="table-responsive bg-white rounded shadow-sm">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Breakdown Time</th>
+          <th>Repair Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of breakdowns">
+          <td>{{ b.description }}</td>
+          <td>{{ b.breakdownTime | date : "dd/MM/yyyy HH:mm" }}</td>
+          <td>
+            {{ (b.repairTime | date : "dd/MM/yyyy HH:mm") || "Not repaired" }}
+          </td>
+          <td>
+            <button
+              class="btn btn-sm btn-outline-danger me-2"
+              (click)="onDeleteBreakdown(b)"
+              title="Delete"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+
+            <button
+              *ngIf="!b.repairTime"
+              class="btn btn-sm btn-outline-success"
+              (click)="onRepairBreakdown(b)"
+              title="Repair"
+            >
+              <i class="bi bi-tools"></i>
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="breakdowns.length === 0">
+          <td colspan="4" class="text-center text-muted">
+            No breakdowns found.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-2">
+    <small> Page {{ brCur + 1 }} / {{ brPages }} – Total {{ brTotal }} </small>
+    <div>
+      <button
+        class="btn btn-outline-secondary btn-sm me-1"
+        [disabled]="brCur === 0"
+        (click)="goToBreakdownsPage(brCur - 1)"
+      >
+        <i class="bi bi-chevron-left"></i> Prev
+      </button>
+      <button
+        class="btn btn-outline-secondary btn-sm"
+        [disabled]="brCur >= brPages - 1"
+        (click)="goToBreakdownsPage(brCur + 1)"
+      >
+        Next <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ 'show d-block': showAddBreakModal }"
+  *ngIf="showAddBreakModal"
+  aria-modal="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Breakdown</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeAddBreakModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <label class="form-label fw-bold">Description</label>
+        <textarea [(ngModel)]="newBreakDesc" rows="3" class="form-control">
+        </textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          class="btn btn-outline-secondary"
+          (click)="closeAddBreakModal()"
+        >
+          Close
+        </button>
+        <button class="btn btn-primary" (click)="onSaveBreakdown()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal-backdrop fade show"
+  *ngIf="showAddBreakModal"
+  (click)="closeAddBreakModal()"
+></div>

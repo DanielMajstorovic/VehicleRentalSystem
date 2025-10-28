@@ -1,0 +1,23 @@
+.container-fluid { padding: 1rem; }
+
+.map-container {
+  height: calc(100vh - 240px);
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+}
+
+.leaflet-control.legend {
+  background: white;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+
+  div { display: flex; align-items: center; margin-bottom: 0.25rem; }
+  i { font-size: 1.2rem; margin-right: 0.5rem; }
+}
+
+.legend {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  

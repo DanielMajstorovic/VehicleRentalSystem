@@ -1,0 +1,26 @@
+.container-fluid {
+  padding: 1rem;
+}
+
+.table thead {
+  background-color: #343a40;
+  color: #fff;
+}
+
+.modal-backdrop {
+  z-index: 1040;
+}
+.modal.fade.show {
+  z-index: 1050;
+}
+.modal-content {
+  border-radius: 0.5rem;
+}
+.show.d-block {
+  display: block;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.badge {
+  font-size: 0.75rem;
+}

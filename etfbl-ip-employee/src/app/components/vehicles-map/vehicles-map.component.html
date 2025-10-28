@@ -1,0 +1,30 @@
+<div class="container-fluid">
+    <h3 class="fw-bold">Vehicles on Map</h3>
+  
+    <div class="d-flex flex-wrap gap-2 align-items-center mt-3 mb-3">
+      <div class="input-group" style="max-width: 300px">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search…"
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="load()"
+        />
+        <button class="btn btn-primary" (click)="load()">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+      <select
+        class="form-select ms-auto"
+        style="width: 180px"
+        [(ngModel)]="statusFilter"
+        (change)="load()"
+      >
+        <option value="">All statuses</option>
+        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+  
+    <div id="vehiclesMap" class="map-container"></div>
+  </div>
+  

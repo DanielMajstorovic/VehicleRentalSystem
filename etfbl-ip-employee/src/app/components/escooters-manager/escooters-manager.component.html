@@ -1,0 +1,262 @@
+<div class="container-fluid">
+    <h3 class="fw-bold">E‑Scooters Management</h3>
+  
+    <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+      <div class="input-group me-2" style="max-width: 240px">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="onSearch()"
+        />
+        <button class="btn btn-primary" (click)="onSearch()">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+  
+      <div>
+        <button class="btn btn-secondary me-2" (click)="csvFile.click()">
+          <i class="fas fa-file-csv"></i> Upload CSV
+        </button>
+        <input
+          #csvFile
+          type="file"
+          accept=".csv,.txt"
+          hidden
+          (change)="onCsvFileSelected($event)"
+        />
+  
+        <button class="btn btn-success" (click)="openCreateModal()">
+          <i class="bi bi-plus-lg"></i> New E‑Scooter
+        </button>
+      </div>
+    </div>
+  
+    <div class="table-responsive bg-white rounded shadow-sm">
+      <table class="table table-striped mb-0">
+        <thead class="thead-dark">
+          <tr>
+            <th>UID</th>
+            <th>Manufacturer</th>
+            <th>Model</th>
+            <th>Purchase Price</th>
+            <th>Max Speed (km/h)</th>
+            <th>Price/Minute</th>
+            <th>Status</th>
+            <th style="width: 80px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of escooters">
+            <td>{{ s.vehicleUid }}</td>
+            <td>
+              {{ s.vehicleManufacturerName }}
+              <span *ngIf="s.vehicleManufacturerCountry">
+                ({{ s.vehicleManufacturerCountry }})
+              </span>
+            </td>
+            <td>{{ s.vehicleModel }}</td>
+            <td>{{ s.vehiclePurchasePrice | currency : "USD" }}</td>
+            <td>{{ s.maxSpeed }}</td>
+            <td>{{ s.vehiclePricePerSecond * 60 | currency : "USD" }}</td>
+            <td>{{ s.vehicleStatus }}</td>
+            <td>
+              <div
+                style="
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: space-between;
+                "
+              >
+                <button
+                  class="btn btn-sm btn-outline-secondary me-1"
+                  (click)="onViewDetails(s)"
+                  title="Details"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="onDelete(s)"
+                  title="Delete"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="escooters.length === 0">
+            <td colspan="8" class="text-center text-muted">
+              No e‑scooters found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="d-flex justify-content-between align-items-center mt-2">
+      <small
+        >Page {{ currentPage + 1 }} / {{ totalPages }} – Total
+        {{ totalElements }}</small
+      >
+      <div>
+        <button
+          class="btn btn-outline-secondary btn-sm me-1"
+          [disabled]="currentPage === 0"
+          (click)="goToPage(currentPage - 1)"
+        >
+          <i class="bi bi-chevron-left"></i> Prev
+        </button>
+        <button
+          class="btn btn-outline-secondary btn-sm"
+          [disabled]="currentPage >= totalPages - 1"
+          (click)="goToPage(currentPage + 1)"
+        >
+          Next <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- CREATE MODAL (polja s maxSpeed) -->
+  <div
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    [ngClass]="{ 'show d-block': showCreateModal }"
+    *ngIf="showCreateModal"
+    aria-modal="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create New E‑Scooter</h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeCreateModal()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="createForm" novalidate>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Vehicle UID</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="vehicleUid"
+                  [ngClass]="{ 'is-invalid': isInvalid('vehicleUid') }"
+                />
+                <div class="invalid-feedback" *ngIf="isInvalidField('vehicleUid')">
+                  Vehicle UID is required.
+              </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Model</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="vehicleModel"
+                  [ngClass]="{ 'is-invalid': isInvalid('vehicleModel') }"
+                />
+                <div class="invalid-feedback" *ngIf="isInvalidField('vehicleModel')">
+                  Model is required.
+              </div>
+              </div>
+            </div>
+  
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Manufacturer</label>
+                <select
+                  class="form-select"
+                  formControlName="vehicleManufacturerId"
+                  [ngClass]="{ 'is-invalid': isInvalid('vehicleManufacturerId') }"
+                >
+                  <option value="" disabled selected>-- Select --</option>
+                  <option *ngFor="let m of manufacturers" [value]="m.id">
+                    {{ m.name }} ({{ m.country }})
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="isInvalidField('vehicleManufacturerId')">
+                  Manufacturer is required.
+              </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Purchase Price (USD)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="vehiclePurchasePrice"
+                  [ngClass]="{ 'is-invalid': isInvalid('vehiclePurchasePrice') }"
+                />
+                <div class="invalid-feedback" *ngIf="isInvalidField('vehiclePurchasePrice')">
+                  Purchase price is required.
+              </div>
+              </div>
+            </div>
+  
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Price per minute (USD)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="vehiclePricePerMinute"
+                  [ngClass]="{ 'is-invalid': isInvalid('vehiclePricePerMinute') }"
+                />
+                <div class="invalid-feedback" *ngIf="isInvalidField('vehiclePricePerMinute')">
+                  Price per minute is required.
+              </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Max Speed (km/h)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="maxSpeed"
+                  [ngClass]="{ 'is-invalid': isInvalid('maxSpeed') }"
+                />
+                <div class="invalid-feedback" *ngIf="isInvalidField('maxSpeed')">
+                  Max speed is required.
+              </div>
+              </div>
+            </div>
+  
+            <label class="form-label fw-bold">Location</label>
+            <div
+              #map
+              id="map"
+              style="height: 300px; border: 1px solid #ccc; margin-bottom: 1rem"
+            ></div>
+  
+            <div class="mb-3">
+              <label class="form-label fw-bold">Image</label>
+              <input
+                type="file"
+                class="form-control"
+                (change)="onImageSelected($event)"
+              />
+              <div class="text-danger mt-1" *ngIf="imageError">
+                {{ imageError }}
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" (click)="closeCreateModal()">
+            Close
+          </button>
+          <button class="btn btn-primary" (click)="onCreate()">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal-backdrop fade show"
+    *ngIf="showCreateModal"
+    (click)="closeCreateModal()"
+  ></div>
+  

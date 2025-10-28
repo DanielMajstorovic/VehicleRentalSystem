@@ -1,0 +1,134 @@
+.unauthorized-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+    padding: 20px;
+    background-image: url('/assets/images/etf.png');
+    background-color: #dd4d4d;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+  
+  .unauthorized-card {
+    width: 100%;
+    max-width: 450px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .card-header {
+    padding: 30px 20px;
+    text-align: center;
+    background-color: rgba(248, 249, 250, 0.8);
+    border-bottom: 1px solid rgba(234, 234, 234, 0.5);
+  }
+  
+  .icon-container {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 15px;
+    background-color: #dc3545;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+  }
+  
+  .icon-container i {
+    font-size: 30px;
+    color: white;
+  }
+  
+  .card-header h2 {
+    margin-bottom: 5px;
+    font-weight: 700;
+    color: #333;
+  }
+  
+  .card-body {
+    padding: 30px;
+  }
+  
+  .card-body h3 {
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+  }
+  
+  .alert {
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  
+  .btn-primary {
+    padding: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+  }
+  
+  .btn-outline-secondary {
+    padding: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-outline-secondary:hover {
+    transform: translateY(-2px);
+  }
+  
+  .card-footer {
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-top: 1px solid rgba(234, 234, 234, 0.5);
+  }
+  
+  @media (max-width: 576px) {
+    .unauthorized-card {
+      border-radius: 8px;
+    }
+    
+    .card-body {
+      padding: 20px;
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .unauthorized-card {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  

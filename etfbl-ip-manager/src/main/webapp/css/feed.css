@@ -1,0 +1,53 @@
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+#search {
+	padding: 8px;
+}
+
+.card-post {
+  border-left: 4px solid #0d6efd;              
+}
+.card-promotion {
+  border-left: 4px solid #198754;              
+  background-image: linear-gradient(90deg, #e7f7f1 0%, #f4faf7 100%);
+}
+
+.card.expired {
+  border-left-color: #dc3545 !important;
+  background-color: #f8d7da !important;        
+  opacity: 0.95;
+}
+
+.filter-btn.active {
+  background-color: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
+}
+
+
+
+
+.custom-navbar {
+  background: linear-gradient(to right, #212529, #212529, #7d828a);
+}
+
+.navbar-logo {
+  height: 30px;
+  width: auto;
+  object-fit: contain;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .navbar-logo {
+    height: 32px;
+  }
+}
+

@@ -1,0 +1,6 @@
+{
+  "timestamp": "2025-04-19T21:54:36.489+00:00",
+  "status": 415,
+  "error": "Unsupported Media Type",
+  "path": "/api/avatars/1"
+}

@@ -1,0 +1,155 @@
+<div class="container-fluid mt-4">
+  <h3 class="fw-bold">Breakdown Entry</h3>
+
+  <div class="row g-2 align-items-end mb-3">
+    <div class="col-sm-4 input-group" style="max-width: 300px">
+      <input
+        class="form-control"
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="refresh()"
+        placeholder="Search…"
+      />
+      <button class="btn btn-primary" (click)="refresh()">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+
+    <div class="col-sm-3 ms-auto" style="width: 180px">
+      <select class="form-select" [(ngModel)]="typeFilter" (change)="refresh()">
+        <option value="">All types</option>
+        <option value="CAR">Car</option>
+        <option value="EBIKE">E‑Bike</option>
+        <option value="ESCOOTER">E‑Scooter</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-responsive bg-white shadow-sm rounded">
+    <table class="table table-striped mb-0 align-middle">
+      <thead class="thead-dark">
+        <tr>
+          <th>UID</th>
+          <th>Manufacturer</th>
+          <th>Model</th>
+          <th>Vehicle Type</th>
+          <th>Rental Price</th>
+          <th>Vehicle Status</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let v of vehicles">
+          <td>{{ v.uid }}</td>
+          <td>{{ v.manufacturerName }}</td>
+          <td>{{ v.model }}</td>
+          <td>{{ v.type }}</td>
+          <td>
+            {{
+              (v.type === 'CAR' ? v.pricePerSecond * 86400 :
+              v.type === 'EBIKE' ? v.pricePerSecond * 3600 :
+              v.type === 'ESCOOTER' ? v.pricePerSecond * 60 : 
+              v.pricePerSecond) 
+              | currency: 'USD'
+            }}
+            {{
+              v.type === 'CAR' ? '/ day' :
+              v.type === 'EBIKE' ? '/ hour' :
+              v.type === 'ESCOOTER' ? '/ minute' : ''
+            }}
+          </td>
+          <td>
+            <span class="badge text-bg-success" *ngIf="v.status === 'AVAILABLE'"
+              >Available</span
+            >
+            <span class="badge text-bg-warning" *ngIf="v.status === 'RENTED'"
+              >Rented</span
+            >
+            <span class="badge text-bg-danger" *ngIf="v.status === 'BROKEN'"
+              >Broken</span
+            >
+          </td>
+          <td class="text-center" [attr.title]="v.status === 'RENTED' ? 'Cannot add breakdown while vehicle is rented' : null">
+            <button
+              class="btn btn-sm btn-outline-danger"
+              title="Report breakdown"
+              (click)="openModal(v)"
+              [disabled]="v.status === 'RENTED'"
+            >
+              <i class="bi bi-tools"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="vehicles.length === 0">
+          <td colspan="7" class="text-center text-muted py-3">
+            No vehicles found.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between mt-2" *ngIf="totalPages > 1">
+    <div>
+      <small
+        >Page {{ page + 1 }} / {{ totalPages }} – Total {{ totalItems }}</small
+      >
+    </div>
+    <div>
+      <button
+        class="btn btn-outline-secondary btn-sm me-1"
+        (click)="changePage(page - 1)"
+        [disabled]="page === 0"
+      >
+        <i class="bi bi-chevron-left"></i> Prev
+      </button>
+      <button
+        class="btn btn-outline-secondary btn-sm"
+        (click)="changePage(page + 1)"
+        [disabled]="page >= totalPages - 1"
+      >
+        Next <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="modal fade show d-block"
+    tabindex="-1"
+    *ngIf="showModal"
+    aria-modal="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            New breakdown for {{ selectedVehicle?.uid }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeModal()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label fw-bold">Description</label>
+          <textarea
+            rows="4"
+            class="form-control"
+            [(ngModel)]="breakdownDesc"
+          ></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" (click)="closeModal()">
+            Close
+          </button>
+          <button class="btn btn-primary" (click)="save()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal-backdrop fade show"
+    *ngIf="showModal"
+    (click)="closeModal()"
+  ></div>
+</div>

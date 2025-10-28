@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+    <channel>
+        <title>ETFBL_IP Feed</title>
+        <link>http://localhost:8080/api/rss/feed</link>
+        <description>Objave i promocije</description>
+        <lastBuildDate>Sat, 19 Apr 2025 12:16:41 GMT</lastBuildDate>
+        <item>
+            <title>Welcome to our system!</title>
+            <description>Try out our new electric vehicle rental app.</description>
+            <category>post</category>
+        </item>
+        <item>
+            <title>New vehicles available!</title>
+            <description>We have added new Tesla and Rimac cars to our fleet.</description>
+            <category>post</category>
+        </item>
+        <item>
+            <title>Objava 1</title>
+            <description>Detalji objave…</description>
+            <category>post</category>
+        </item>
+        <item>
+            <title>20% Student Discount</title>
+            <description>All students get a 20% discount on their first ride!</description>
+            <category>promotion</category>
+            <startsAt>Mon, 14 Apr 2025 23:52:07 GMT</startsAt>
+            <endsAt>Thu, 15 May 2025 23:52:07 GMT</endsAt>
+        </item>
+        <item>
+            <title>Free Weekend Ride</title>
+            <description>Enjoy 2 hours of free rides this weekend!</description>
+            <category>promotion</category>
+            <startsAt>Fri, 18 Apr 2025 23:52:07 GMT</startsAt>
+            <endsAt>Sun, 20 Apr 2025 23:52:07 GMT</endsAt>
+        </item>
+        <item>
+            <title>Nova Promo</title>
+            <description>Opis …</description>
+            <category>promotion</category>
+            <startsAt>Mon, 1 Dec 2025 00:00:00 GMT</startsAt>
+            <endsAt>Wed, 31 Dec 2025 23:59:59 GMT</endsAt>
+        </item>
+    </channel>
+</rss>

@@ -1,0 +1,334 @@
+<div class="container-fluid">
+    <h3 class="fw-bold">Manufacturers Management</h3>
+  
+    <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+      <div>
+        <div
+          class="input-group me-2 d-inline-flex align-items-center"
+          style="vertical-align: middle"
+        >
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search…"
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="onSearch()"
+          />
+          <button class="btn btn-primary" (click)="onSearch()">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </div>
+  
+      <div>
+        <button class="btn btn-success" (click)="openCreateModal()">
+          <i class="bi bi-plus-lg"></i> New Manufacturer
+        </button>
+      </div>
+    </div>
+  
+    <div class="table-responsive bg-white rounded shadow-sm">
+      <table class="table table-striped mb-0">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">E‑mail</th>
+            <th scope="col">Country</th>
+            <th scope="col">Address</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Fax</th>
+            <th scope="col" style="width: 80px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of manufacturers">
+            <td>{{ m.name }}</td>
+            <td>{{ m.email }}</td>
+            <td>{{ m.country }}</td>
+            <td>{{ m.address }}</td>
+            <td>{{ m.phone || 'N/A' }}</td>
+            <td>{{ m.fax || 'N/A' }}</td>
+            <td>
+              <div
+                style="display: flex; flex-direction: row; justify-content: space-between"
+              >
+                <button
+                  class="btn btn-sm btn-outline-secondary me-1"
+                  (click)="openUpdateModal(m)"
+                  title="Edit"
+                >
+                  <i class="fas fa-file-pen"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="onDeleteManufacturer(m.id, m.name)"
+                  title="Delete"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="manufacturers && manufacturers.length === 0">
+            <td colspan="7" class="text-center text-muted">No manufacturers found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="d-flex justify-content-between align-items-center mt-2">
+      <div>
+        <small>
+          Showing page {{ currentPage + 1 }} of {{ totalPages }} – Total items:
+          {{ totalElements }}
+        </small>
+      </div>
+      <div>
+        <button
+          class="btn btn-outline-secondary btn-sm me-1"
+          [disabled]="currentPage === 0"
+          (click)="goToPage(currentPage - 1)"
+        >
+          <i class="bi bi-chevron-left"></i> Prev
+        </button>
+        <button
+          class="btn btn-outline-secondary btn-sm"
+          [disabled]="currentPage >= totalPages - 1"
+          (click)="goToPage(currentPage + 1)"
+        >
+          Next <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    [ngClass]="{ 'show d-block': showCreateModal }"
+    *ngIf="showCreateModal"
+    aria-labelledby="createManufacturerModalLabel"
+    aria-modal="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createManufacturerModalLabel">
+            New Manufacturer
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeCreateModal()"
+          ></button>
+        </div>
+  
+        <div class="modal-body">
+          <form [formGroup]="createForm" novalidate>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="name"
+                [ngClass]="{ 'is-invalid': invalid(createForm, 'name') }"
+              />
+              <div class="invalid-feedback" *ngIf="isInvalidFieldCreate('name')">
+                Name is required.
+            </div>
+            </div>
+  
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Country</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="country"
+                  [ngClass]="{ 'is-invalid': invalid(createForm, 'country') }"
+                />
+                <div class="invalid-feedback" *ngIf="isInvalidFieldCreate('country')">
+                    Country is required.
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  formControlName="email"
+                  [ngClass]="{ 'is-invalid': invalid(createForm, 'email') }"
+                />
+                <div class="invalid-feedback" *ngIf="isInvalidFieldCreate('email')">
+                    Valid e-mail is required.
+                </div>
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label class="form-label fw-bold">Address</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="address"
+                [ngClass]="{ 'is-invalid': invalid(createForm, 'address') }"
+              />
+              <div class="invalid-feedback" *ngIf="isInvalidFieldCreate('address')">
+                Address is required.
+            </div>
+            </div>
+  
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Phone</label>
+                <input type="text" class="form-control" formControlName="phone" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Fax</label>
+                <input type="text" class="form-control" formControlName="fax" />
+              </div>
+            </div>
+          </form>
+        </div>
+  
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="closeCreateModal()"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="onCreateManufacturer()"
+          >
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal-backdrop fade show"
+    *ngIf="showCreateModal"
+    (click)="closeCreateModal()"
+  ></div>
+  
+  <div
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    [ngClass]="{ 'show d-block': showUpdateModal }"
+    *ngIf="showUpdateModal"
+    aria-labelledby="updateManufacturerModalLabel"
+    aria-modal="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateManufacturerModalLabel">
+            Update Manufacturer
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeUpdateModal()"
+          ></button>
+        </div>
+  
+        <div class="modal-body">
+          <form [formGroup]="updateForm" novalidate>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="name"
+                [ngClass]="{ 'is-invalid': invalid(updateForm, 'name') }"
+              />
+              <div class="invalid-feedback" *ngIf="isInvalidFieldUpdate('name')">
+                Name is required.
+            </div>
+            </div>
+  
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Country</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="country"
+                  [ngClass]="{ 'is-invalid': invalid(updateForm, 'country') }"
+                />
+                <div class="invalid-feedback" *ngIf="isInvalidFieldUpdate('country')">
+                    Country is required.
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  formControlName="email"
+                  [ngClass]="{ 'is-invalid': invalid(updateForm, 'email') }"
+                />
+                <div class="invalid-feedback" *ngIf="isInvalidFieldUpdate('email')">
+                    Valid e-mail is required.
+                </div>
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label class="form-label fw-bold">Address</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="address"
+                [ngClass]="{ 'is-invalid': invalid(updateForm, 'address') }"
+              />
+              <div class="invalid-feedback" *ngIf="isInvalidFieldUpdate('address')">
+                Address is required.
+            </div>
+            </div>
+  
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Phone</label>
+                <input type="text" class="form-control" formControlName="phone" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Fax</label>
+                <input type="text" class="form-control" formControlName="fax" />
+              </div>
+            </div>
+          </form>
+        </div>
+  
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="closeUpdateModal()"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="onUpdateManufacturer()"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal-backdrop fade show"
+    *ngIf="showUpdateModal"
+    (click)="closeUpdateModal()"
+  ></div>
+  
